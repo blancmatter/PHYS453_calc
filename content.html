@@ -62,9 +62,9 @@ Previous versions of the Exposure time calulutaor on which this was built were;
               <option value="ringo"> RINGO3</option>
             </select>
           </td>
-          <td id="pulldn"> Exposure Time (s):</td>
+          <td id="pulldn">Seeing (arcsec):</td>
           <td>
-            <input id="expt" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="1200" data-slider-step="30" data-slider-value="300" onchange="calcimage();"/>
+            <input id="expt" data-slider-id='ex1Slider' type="text" data-slider-min="0.4" data-slider-max="3.0" data-slider-step="0.1" data-slider-value="1.0" onchange="calcimage();"/>
             </td>
           </tr>
           <tr>
@@ -113,11 +113,23 @@ Previous versions of the Exposure time calulutaor on which this was built were;
                <td>
                   <input id="apers" value="2.0,3.5,4.2" onchange="calcimage();">
                </td>
-
-
-
-
          </table>
+         <br>
+         <table>
+          <tr>
+             <td>Magnitude Min</td>
+             <td>
+               <input id="magmin" size="4" type="number" value=16 onchange="calcimage();">
+           </td>
+           <td>Magnitude Max</td>
+           <td>
+             <input id="magmax" size="4" type="number" value=22 onchange="calcimage();">
+           </td>
+           <td>Exposure Time Max</td>
+           <td>
+             <input id="exptmax" size="4" type="number" value=1200 min=200 step=200 onchange="calcimage();">
+           </td>
+      </table>
 
 
 
@@ -259,6 +271,9 @@ Previous versions of the Exposure time calulutaor on which this was built were;
           var snr = +document.getElementById("snr").value;
           var sky = +document.getElementById("sky").value;
           var apers = document.getElementById("apers").value;
+          var magmin = document.getElementById("magmin").value;
+          var magmax = document.getElementById("magmax").value;
+          var exptmax = document.getElementById("exptmax").value;
 
 
           // FIRST PULL-DOWN ***
@@ -548,15 +563,15 @@ Previous versions of the Exposure time calulutaor on which this was built were;
             hAxis: {
               title: "Seeing / arcsec",
               viewWindow: {
-                min: 0.5,
-                max: 3
+                min: 0,
+                max: exptmax,
               }
             },
             vAxis: {
               title: "Limiting Magnitude",
               viewWindow: {
-                min: 14,
-                max: 24,
+                min: magmin,
+                max: magmax,
               }
             }
           };
