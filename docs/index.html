@@ -45,7 +45,6 @@ Previous versions of the Exposure time calulutaor on which this was built were;
 
       <br><br>
       <p> Enter a comma seperated list of the telescope apertures (in metres) into the Apertures box</p>
-       <p style="width:600px"> NOTE: The calculation assumes that the collecting area of the telescope scales as the square of the aperture (i.e. that the ratio of primary mirror diameter to secondary mirror obscuration diameter is fixed). Further the pixel scale of an LT instrument on a larger telescope is assumed to be the same.</p>
 
 
       <div id="curve_chart" style="width: 1000px; height: 600px"></div>
@@ -175,8 +174,22 @@ Previous versions of the Exposure time calulutaor on which this was built were;
                   </td>
            </tr>
          </table>
-
-
+         <br><br>
+         <table>
+          <tr>
+             <td>Magnitude Min</td>
+             <td>
+               <input id="spmagmin" size="4" type="number" value=10 onchange="calcspec();">
+           </td>
+           <td>Magnitude Max</td>
+           <td>
+             <input id="spmagmax" size="4" type="number" value=18 onchange="calcspec();">
+           </td>
+           <td>Exposure Time Max</td>
+           <td>
+             <input id="spexptmax" size="4" type="number" value=200 min=20 step=10 onchange="calcspec();">
+           </td>
+         </table>
 
 
 
@@ -184,7 +197,7 @@ Previous versions of the Exposure time calulutaor on which this was built were;
          <br><br><br>
 
 
-         <p>  <i>(Version 3.0 - May 2019, Marco Lam and Doug Arnold)</i> </p>
+         <p>  <i>(Feb 2020, Doug Arnold and Marco Lam)</i> </p>
     </center>
     <!-- ......................................................................... -->
     <!-- ... The rest of this file is JavaScript code within the <script> tags ... -->
@@ -412,6 +425,9 @@ Previous versions of the Exposure time calulutaor on which this was built were;
           var spsnr = document.getElementById("spsnr").value;
           var spsky = document.getElementById("spsky").value;
           var spapers = document.getElementById("spapers").value;
+          var spmagmin = document.getElementById("spmagmin").value;
+          var spmagmax = document.getElementById("spmagmax").value;
+          var spexptmax = document.getElementById("spexptmax").value;
 
           // FIRST PULL-DOWN ***
           // Look-up tables of variables - INSTRUMENT CHARACTERISTICS
@@ -584,15 +600,15 @@ Previous versions of the Exposure time calulutaor on which this was built were;
               hAxis: {
                 title: "Seeing / arcsec",
                 viewWindow: {
-                  min: 0.5,
-                  max: 3
+                  min: 0,
+                  max: spexptmax,
                 }
               },
               vAxis: {
                 title: "Limiting Magnitude",
                 viewWindow: {
-                  min: 8,
-                  max: 20,
+                  min: spmagmin,
+                  max: spmagmax,
                 }
               }
             };
