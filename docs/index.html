@@ -132,7 +132,7 @@ Previous versions of the Exposure time calulutaor on which this was built were;
                </td>
                <td id="pulldn">Seeing (arcsec):</td>
                  <td>
-                   <input name="spsee" id="spsee" data-slider-id="ex1Slider" type="text" data-slider-min="0.4" data-slider-max="3.0" data-slider-step="0.2" data-slider-value="1.2" onchange="calcimage();"/>
+                   <input name="spsee" id="spsee" data-slider-id="ex1Slider" type="text" data-slider-min="0.4" data-slider-max="3.0" data-slider-step="0.2" data-slider-value="1.2" onchange="calcspec();"/>
                  </td>
            </tr>
            <tr>
@@ -421,7 +421,7 @@ Previous versions of the Exposure time calulutaor on which this was built were;
           var spinstrum = document.getElementById("spinstrum").value;
           var spslit = document.getElementById("spslit").value;
           var sparm = document.getElementById("sparm").value;
-          var spsee = 1.2 //+document.getElementById("spsee").value;
+          var spsee = document.getElementById("spsee").value;
           var spsnr = document.getElementById("spsnr").value;
           var spsky = document.getElementById("spsky").value;
           var spapers = document.getElementById("spapers").value;
