@@ -94,7 +94,7 @@ Previous versions of the Exposure time calulutaor on which this was built were;
                <td></td>
                <td id="pulldn">Apertures (m):</td>
                <td>
-                  <input id="apers" value="2.0,3.5,4.2" onchange="calcimage();">
+                  <input id="apers" value="2.0,4.2,8.0" onchange="calcimage();">
                </td>
          </table>
          <br><br>
@@ -130,10 +130,10 @@ Previous versions of the Exposure time calulutaor on which this was built were;
                     <option value="sprat">   SPRAT</option>
                  </select>
                </td>
-               <td id="pulldn"> Exposure Time (s):</td>
-               <td>
-                 <input id="spexpt" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="1200" data-slider-step="30" data-slider-value="300" onchange="calcspec();"/>
-               </td>
+               <td id="pulldn">Seeing (arcsec):</td>
+                 <td>
+                   <input name="spsee" id="spsee" data-slider-id="ex1Slider" type="text" data-slider-min="0.4" data-slider-max="3.0" data-slider-step="0.2" data-slider-value="1.2" onchange="calcimage();"/>
+                 </td>
            </tr>
            <tr>
 
@@ -170,7 +170,7 @@ Previous versions of the Exposure time calulutaor on which this was built were;
                <td><td>
                   <td id="pulldn">Apertures (m):</td>
                   <td>
-                     <input id="spapers" value="2.0,3.5,4.2" onchange="calcspec();">
+                     <input id="spapers" value="2.0,4.2,8.0" onchange="calcspec();">
                   </td>
            </tr>
          </table>
@@ -239,7 +239,7 @@ Previous versions of the Exposure time calulutaor on which this was built were;
           }
       });
 
-      var slider4 = new Slider("#spexpt", {
+      var slider4 = new Slider("#spsee", {
         formatter: function(value) {
             return value;
           }
@@ -354,7 +354,7 @@ Previous versions of the Exposure time calulutaor on which this was built were;
           var expt = 0;  // base seeing
 
           for (var i = 0; i <= exptmax; i+=1) {
-            var expt = expt + i;                                         //
+            var expt = i;                                         //
             var dataLine = [expt]
             var areaofdisk  = (see * 2 * see * 2);                         // area in arcsec
             var numberofpixels = areaofdisk / (pixscale * pixscale * bin * bin); // area in pixels
@@ -421,117 +421,47 @@ Previous versions of the Exposure time calulutaor on which this was built were;
           var spinstrum = document.getElementById("spinstrum").value;
           var spslit = document.getElementById("spslit").value;
           var sparm = document.getElementById("sparm").value;
-          var spexpt = document.getElementById("spexpt").value;
+          var spsee = 1.2 //+document.getElementById("spsee").value;
           var spsnr = document.getElementById("spsnr").value;
           var spsky = document.getElementById("spsky").value;
           var spapers = document.getElementById("spapers").value;
           var spmagmin = document.getElementById("spmagmin").value;
           var spmagmax = document.getElementById("spmagmax").value;
           var spexptmax = document.getElementById("spexptmax").value;
+          var slitwd = 2;
 
-          // FIRST PULL-DOWN ***
-          // Look-up tables of variables - INSTRUMENT CHARACTERISTICS
-          if (spinstrum == "frodo")    { // FRODO
-            var sppixscale = 0.82;       // spatial pixel scale (arcsec)
-            var spdarkcurrent = 0;       // ??
-            var spreadnoise = 10;        // from website
-          } else                       { // sprat
-            var sppixscale = 0.48;       // spatial pixel scale (arcsec)
-            var spdarkcurrent = 0;       // ??
-            var spreadnoise = 9;         // from SPIE 2014 paper.
-         };
 
-          // SECOND PULL-DOWN ***
-          // Look-up tables of variables - SLIT width (arcsec)
-          if (spslit == "spratslit")   {
-            var slitwd = 2;            // SPRAT slit ESTIMATE
-          } else                       {
-            var slitwd = 10;           // FRODO field-of-view
-          };
+         var sppixscale = 0.48;       // spatial pixel scale (arcsec)
+         var spdarkcurrent = 0;       // ??
+         var spreadnoise = 9;         // from SPIE 2014 paper.
+
+
+                   // SPRAT slit ESTIMATE
+
 
           // THIRD PULL-DOWN ***
           // Look-up tables of other variables (all instrument and arm specific)
           //  * spzp should be ZP corresponding to 1 electron/second/Angstrom
           //  * spskybr (Sky brightness) in mag/sqr arcsec
           // ...
-          if (sparm == "frredarmv") {  // **** FRODO Red VPH @ 7000 (R-band)
-            var spzp = 16.0;          // FRODO zeropoint at 7000 (from website) = 15.30. In Jan 2016 CMC added 0.7 following 2015 recoating.
-            var spskybr = 20.8;        // sky brightness in mag/arcsec^2
-            var spskyoff = 1.0;        // Used when calculating bright sky; +2 mag,+4 mag,etc.
-            var spres = 5300;          // spectral resolution, lambda/delta-lambda
-            var wvpixscale = 0.8;      // spectral pixel scale, in Angstrom
-            var refwav = 7000;         // reference wavelength for calculation, in Angstrom
-           } else if (sparm == "frbluarmv") { // **** FRODO Blue VPH @ 4500 (B-band)
-            var spzp = 14.5;           // FRODO zeropoint at 4500 (from website)  = 14.50. In Jan 2016 CMC added 0.7 following 2015 recoating.
-            var spskybr = 22.8;        // Bessell B-band
-            var spskyoff = 1.5;        // Bessell B-band
-            var spres = 5500;
-            var wvpixscale = 0.35;
-            var refwav = 4500;
-          } else if (sparm == "frredarm") {  // **** FRODO Red @ 7000
-            var spzp = 15.60;           // FRODO zeropoint at 7000 (from website) = 14.90. In Jan 2016 CMC added 0.7 following 2015 recoating.
-            var spskybr = 20.8;        // R band
-            var spskyoff = 1.0;        // R band
-            var spres = 2200;
-            var wvpixscale = 1.9;
-            var refwav = 7000;
-         } else if (sparm == "frbluarm") {   // **** FRODO Blue @ 4500
-            var spzp = 14.70; 			// FRODO zeropoint at 4500 (from website) = 14.20. In Jan 2016 CMC added 0.7 following 2015 recoating.
-            var spskybr = 22.8;        // Bessell B-band
-            var spskyoff = 1.5;        // Bessell B-band
-            var spres = 2600;
-            var wvpixscale = 0.60;
-            var refwav = 4500;
 
-         } else if (sparm == "spredarm") {   // **** SPRAT Red @ 7000
+
+
             var spzp = 17.7;           // Estimate giving results similar to SPIE paper = 17.0. In Jan 2016 CMC added 0.7 following 2015 recoating.
             var spskybr = 20.8;        // r band (Originally had 24.6 here. Not sure why. C Benn measures 21.8 in V. 20.8 in R is a reasonable guess.)
             var spskyoff = 1.0;        // r band
             var spres = 350;           // Estimate from SPIE paper
             var wvpixscale = 9.0;      // GUESSED!!!
             var refwav = 7000;
-          } else                    {  // **** SPRAT blue @ 4500
+
             var spzp = 17.2;           // Estimate giving results similar to SPIE paper = 16.5. In Jan 2016 CMC added 0.7 following 2015 recoating.
             var spskybr = 22.8;        // Bessell B-band  (Originally had 24.6 here. Not sure why. C Benn measures 21.8 in V. 22.8 in B is a reasonable guess.)
             var spskyoff = 1.5;        // Bessell B-band
             var spres = 350;           // Estimate from SPIE paper
             var wvpixscale = 3.0;      // GUESSED!!!
             var refwav = 4500;
-          };
 
-          // *************************************************************************
 
-          // ****
-          // **** Check the select-option combinations are valid
-          // ****
-
-          //FRODO
-          if (spinstrum == "frodo" && spslit == "spratslit") {
-              alert("Incorrect Instrument-Slit Combination!");
-          }
-          if (spinstrum == "frodo" && sparm == "spbluarm") {
-              alert("Incorrect Instrument-Arm Combination!");
-          }
-          if (spinstrum == "frodo" && sparm == "spredarm") {
-              alert("Incorrect Instrument-Arm Combination!");
-          }
-
-          //SPRAT
-          if (spinstrum == "sprat" && spslit == "ifu") {
-              alert("Incorrect Instrument-Slit Combination!");
-          }
-          if (spinstrum == "sprat" && sparm == "frredarmv") {
-              alert("Incorrect Instrument-Arm Combination!");
-          }
-          if (spinstrum == "sprat" && sparm == "frbluarmv") {
-              alert("Incorrect Instrument-Arm Combination!");
-          }
-          if (spinstrum == "sprat" && sparm == "frredarm") {
-              alert("Incorrect Instrument-Arm Combination!");
-          }
-          if (spinstrum == "sprat" && sparm == "frbluarm") {
-              alert("Incorrect Instrument-Arm Combination!");
-          }
 
           // *************************************************************************
 
@@ -557,14 +487,14 @@ Previous versions of the Exposure time calulutaor on which this was built were;
 
 
           var spskymag = spskybr - (spskyoff * spsky);  //
-          var spsee = 0.5;  // same as imaging - base seeing
+          spexpt=1
 
+           for (var si = 0; si <= spexptmax; si++) {
+               var spexpt = si;
 
-           for (var si = 0; si <= 25; si++) {
-               var spseeing = spsee + (si / 10) ;           // same as for imaging - step through seeing in arcsec
-               var spdataLine = [spseeing]  // Create the list for the dataline with seeing value
-               var spatialarcs = (slitwd * spseeing * 2) ;                              // area on sky, in arcsec
-               var spatialarea = (slitwd * spseeing * 2) / (sppixscale * sppixscale) ;  // area on sky, in pixels
+               var spdataLine = [spexpt]  // Create the list for the dataline with exposure time
+               var spatialarcs = (slitwd * spsee * 2) ;                              // area on sky, in arcsec
+               var spatialarea = (slitwd * spsee * 2) / (sppixscale * sppixscale) ;  // area on sky, in pixels
                var specpixsc   = (refwav) / (spres * wvpixscale) ;                  // spec resolution, in pixels
                var spnumberofpixels = spatialarea * specpixsc ;  // number of pixels per spat/spect resln element
 
