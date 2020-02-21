@@ -123,12 +123,9 @@ Previous versions of the Exposure time calulutaor on which this was built were;
 
          <table>
            <tr>
-               <td id="pulldn">Instrument: </td>
+               <td id="pulldn">Spectral Resolution: </td>
                <td>
-                 <select name="spectrometer" id="spinstrum" onchange="calcspec();">
-                    <option value="frodo">   FRODOspec</option>
-                    <option value="sprat">   SPRAT</option>
-                 </select>
+                 <input id="spres" type="number" value="600" min=200 max=60000 step=50 onchange="calcspec();">
                </td>
                <td id="pulldn">Seeing (arcsec):</td>
                  <td>
@@ -137,12 +134,9 @@ Previous versions of the Exposure time calulutaor on which this was built were;
            </tr>
            <tr>
 
-              <td id="pulldn">Slit: </td>
+              <td id="pulldn">Pixel Scale (arcsec): </td>
               <td>
-                 <select name="slitwidth" id="spslit" onchange="calcspec();">
-                    <option value="ifu">  IFU fibre bundle  </option>
-                    <option value="spratslit"> SPRAT 2 arcsec slit </option>
-                 </select>
+                 <input id="sppixscale" type="number" value="0.5" min=0.05 max=8 step=0.05 onchange="calcspec();">
               </td>
               <td id="pulldn"> SNR: </td>
               <td>
@@ -150,16 +144,9 @@ Previous versions of the Exposure time calulutaor on which this was built were;
                </td>
            </tr>
            <tr>
-              <td id="pulldn">Spectrometer arm: </td>
+              <td id="pulldn">Read Noise (electrons): </td>
               <td>
-                 <select name="specarm" id="sparm" onchange="calcspec();">
-                    <option value="frredarmv"> FRODOspec Red arm (VPH)  </option>
-                    <option value="frbluarmv"> FRODOspec Blue arm (VPH) </option>
-                    <option value="frredarm">  FRODOspec Red arm (low res)  </option>
-                    <option value="frbluarm">  FRODOspec Blue arm (low res) </option>
-                    <option value="spredarm">  SPRAT Red region  </option>
-                    <option value="spbluarm">  SPRAT Blue region </option>
-                 </select>
+                <input id="spreadnoise" type="number" value="10" min=1 step=1 onchange="calcspec();">
               </td>
               <td>Sky Brightness: </td>
               <td>
@@ -418,9 +405,6 @@ Previous versions of the Exposure time calulutaor on which this was built were;
          var spchart = new google.visualization.LineChart(document.getElementById('spcurve_chart'));
 
           // Look up (Define?) the input elements in the document for IMAGING
-          var spinstrum = document.getElementById("spinstrum").value;
-          var spslit = document.getElementById("spslit").value;
-          var sparm = document.getElementById("sparm").value;
           var spsee = document.getElementById("spsee").value;
           var spsnr = document.getElementById("spsnr").value;
           var spsky = document.getElementById("spsky").value;
@@ -428,12 +412,13 @@ Previous versions of the Exposure time calulutaor on which this was built were;
           var spmagmin = document.getElementById("spmagmin").value;
           var spmagmax = document.getElementById("spmagmax").value;
           var spexptmax = document.getElementById("spexptmax").value;
+          var spres = document.getElementById("spres").value;         // Estimate from SPIE paper
           var slitwd = 2;
 
 
-         var sppixscale = 0.48;       // spatial pixel scale (arcsec)
+         var sppixscale = document.getElementById("sppixscale").value;      // spatial pixel scale (arcsec)
          var spdarkcurrent = 0;       // ??
-         var spreadnoise = 9;         // from SPIE 2014 paper.
+         var spreadnoise = document.getElementById("spreadnoise").value;         // from SPIE 2014 paper.
 
 
                    // SPRAT slit ESTIMATE
@@ -457,7 +442,7 @@ Previous versions of the Exposure time calulutaor on which this was built were;
             var spzp = 17.2;           // Estimate giving results similar to SPIE paper = 16.5. In Jan 2016 CMC added 0.7 following 2015 recoating.
             var spskybr = 22.8;        // Bessell B-band  (Originally had 24.6 here. Not sure why. C Benn measures 21.8 in V. 22.8 in B is a reasonable guess.)
             var spskyoff = 1.5;        // Bessell B-band
-            var spres = 350;           // Estimate from SPIE paper
+
             var wvpixscale = 3.0;      // GUESSED!!!
             var refwav = 4500;
 
