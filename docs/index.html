@@ -82,6 +82,8 @@ Previous versions of the Exposure time calulutaor on which this was built were;
                   <option value="fsr">  SDSS-R (AB system)    </option>
                   <option value="fsi">  SDSS-I (AB system)    </option>
                   <option value="fsz">  SDSS-Z (AB system)    </option>
+                  <option value="fjj">  J-Band (Vega)    </option>
+                  <option value="fhh">  H-Band (Vega)    </option>
                 </select>
               </td>
               <td>Sky Brightness: </td>
@@ -305,8 +307,15 @@ Previous versions of the Exposure time calulutaor on which this was built were;
             var zp = 24.52;         // 24.0 from old ETC, modified with HJ's factor
             var skybr = 18.3;
             var skyoff = 0.5;
-          };
-
+          } else if (filt == "fjj") {      // IO:I J-band
+            var zp = 24.50;     // 24.0 from IO:I webpage (pre-commissioning, so RMB estimate?). In Jan 2016 CMC added 0.5 after 2015 recoating.
+            var skybr = 16.6;   // from ING sky brightness page, in mag per sqr arcsec
+            var skyoff = 0.0;   // skyoff assumes moon has no affect on J-band sky
+          } else if (filt == "fhh") {      // IO:I H-band
+            var zp = 24.00;     // 23.5 updated after commissioning; corrected for gain (CJD). CMC added 0.5 after 2015 recoating.
+            var skybr = 12.5;   // from ING sky brightness page, in mag per sqr arcsec
+            var skyoff = 0.0;   // skyoff assumes moon has no affect on H-band sky
+         };
 
           // *************************************************************************
 
